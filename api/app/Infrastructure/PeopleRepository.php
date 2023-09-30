@@ -127,8 +127,7 @@ class PeopleRepository implements PeopleRepositoryInterface{
 
     public function update(People $pessoa): void
     {
-        $stmt = $this->pdo->prepare("UPDATE pessoas SET 
-        cpf = ?, 
+        $stmt = $this->pdo->prepare("UPDATE pessoas SET  
         nome = ?, 
         rg = ?, 
         telefone = ?, 
@@ -138,14 +137,14 @@ class PeopleRepository implements PeopleRepositoryInterface{
         dtnasc = ? WHERE cpf = ?");
 
 $stmt->execute([
-    $pessoa->get_cpf(),
-        $pessoa->get_nome(),
-        $pessoa->get_rg(),
-        $pessoa->get_telefone(),
-        $pessoa->get_email(),
-        $pessoa->get_endereco()->getId(),
-        $pessoa->get_tipo(),
-        $pessoa->get_dt_nasc()]);
+    $pessoa->get_nome(),
+    $pessoa->get_rg(),
+    $pessoa->get_telefone(),
+    $pessoa->get_email(),
+    $pessoa->get_endereco()->getId(),
+    $pessoa->get_tipo(),
+    $pessoa->get_dt_nasc(),
+    $pessoa->get_cpf(),]);
     }
     
     
@@ -159,13 +158,15 @@ $stmt->execute([
 
         if($pessoaData)
         {
+            $endereco = new Address();
+            $endereco->setId($pessoaData['fkendereco']);
             return new People(
             $pessoaData['cpf'],
             $pessoaData['nome'],
             $pessoaData['rg'],
             $pessoaData['telefone'],
             $pessoaData['email'],
-            $pessoaData['fkendereco'],
+            $endereco,
             $pessoaData['tipo'],
             $pessoaData['dtnasc']);
         }else {return null;}

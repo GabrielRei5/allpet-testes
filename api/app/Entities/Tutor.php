@@ -24,23 +24,24 @@ class Tutor extends People{
     ?Address $endereco = null,
     ?int $id_tutor = null)
     {   
+        parent::__construct($cpf, $nome, $rg, $telefone, $email, $endereco,  $tipo, $dt_nasc);
         if($id_tutor !== null)
         {
             $this->id_tutor = $id_tutor;
         }
         $this->sts = $status;
         $this->dtregistro = $dtregistro;
-        $this->cpf = $cpf;
+        // // $this->cpf = $cpf;
 
         
-        $this->nome = $nome;
-        $this->dt_nasc = $dt_nasc;
-        $this->rg = $rg;
+        // $this->nome = $nome;
+        // $this->dt_nasc = $dt_nasc;
+        // $this->rg = $rg;
         
-        $this->email = $email;
-        $this->telefone = $telefone;
-        $this->tipo = $tipo;
-        $this->endereco = $endereco;
+        // $this->email = $email;
+        // $this->telefone = $telefone;
+        // $this->tipo = $tipo;
+        // $this->endereco = $endereco;
         
         
     }

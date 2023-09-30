@@ -3,7 +3,7 @@
  error_reporting(E_ALL);
  class DB {
 
-    private $host = '172.22.0.2';
+    private $host = '172.26.0.2';
     private $port = '3306';
     private $username = 'root';
     private $password = 'root';

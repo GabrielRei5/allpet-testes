@@ -118,7 +118,6 @@ class AddressRepository implements AddressRepositoryInterface{
     public function update(Address $address): void
     {
         $stmt = $this->pdo->prepare("UPDATE enderecos SET 
-        id_endereco = ?, 
         cep = ?, 
         rua = ?, 
         num_da_casa = ?, 
@@ -127,13 +126,13 @@ class AddressRepository implements AddressRepositoryInterface{
         bairro = ? WHERE id_endereco = ?");
 
 $stmt->execute([
-    $address->getId(),
     $address->get_cep(),
     $address->get_logradouro(),
     $address->get_num_casa(),
     $address->get_cidade(),
     $address->get_estado(),
-    $address->get_bairro(),]);
+    $address->get_bairro(),
+    $address->getId()]);
     }
     
     
@@ -148,13 +147,13 @@ $stmt->execute([
         if($addData)
         {
             return new Address(
-            $addData['id_endereco'],
-            $addData['cep'],
-            $addData['rua'],
-            $addData['num_da_casa'],
-            $addData['cidade'],
-            $addData['estado'],
-            $addData['bairro']);
+                $addData['cep'],
+                $addData['rua'],
+                $addData['num_da_casa'],
+                $addData['cidade'],
+                $addData['estado'],
+                $addData['bairro'],
+                $addData['id_endereco']);
         }else {return null;}
         
     }

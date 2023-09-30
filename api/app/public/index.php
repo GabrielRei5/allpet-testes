@@ -7,6 +7,7 @@ use Slim\Factory\AppFactory;
 
 // Create a Slim app
 $app = AppFactory::create();
+$app->add(new \Slim\Middleware\BodyParsingMiddleware());
 
 
 // Define routes

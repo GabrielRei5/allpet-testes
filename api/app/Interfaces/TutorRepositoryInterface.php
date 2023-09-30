@@ -9,9 +9,9 @@ interface TutorRepositoryInterface{
 
     public function getAll(): array;
 
-    public function delete(Tutor $tutor): void;
+    public function delete(Tutor $tutor): bool;
 
-    public function search(string $query): array;
+    public function search(string $query, string $type): array;
 
-    public function update(Tutor $tutor): void;
+    public function update(Tutor $tutor): array;
 }

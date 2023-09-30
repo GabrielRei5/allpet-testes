@@ -12,7 +12,7 @@ class People {
     protected ?Address $endereco;
 
 
-    public function __construct(string $cpf, string $nome, string $rg, string $telefone, string $email, Address $endereco, int $tipo, string $dt_nasc) {
+    public function __construct(?string $cpf = null, ?string $nome = null, ?string $rg = null, ?string $telefone = null, ?string $email = null, ?Address $endereco = null, ?int $tipo = null, ?string $dt_nasc = null) {
 
         $this->nome = $nome;
         $this->dt_nasc = $dt_nasc;

@@ -74,11 +74,11 @@ class TutorRepository implements TutorRepositoryInterface{
         
     }
 
-    public function search(string $query): array
+    public function search(string $query, string $type): array
     {
         try {
-            $stmt = $this->pdo->prepare('SELECT * FROM tutores t1 INNER JOIN pessoas t2 ON t1.cpf_pessoa = t2.cpf INNER JOIN enderecos t3 ON t2.fkendereco = t3.id_endereco WHERE t2.nome LIKE ?');
-            $stmt->execute(["%$query%"]);
+            $stmt = $this->pdo->prepare('SELECT * FROM tutores t1 INNER JOIN pessoas t2 ON t1.cpf_pessoa = t2.cpf INNER JOIN enderecos t3 ON t2.fkendereco = t3.id_endereco WHERE t2.? LIKE ?');
+            $stmt->execute(["%$query%", "%$type%"]);
             $tutoresData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $tutores = [];
@@ -97,25 +97,37 @@ class TutorRepository implements TutorRepositoryInterface{
         }
     }
 
-    public function delete(Tutor $tutor): void
+    public function delete(Tutor $tutor): bool
     {
         $stmt = $this->pdo->prepare("DELETE FROM tutores WHERE id_tutor = ?");
-        $stmt->execute([$tutor->get_idTutor()]);
+        if($stmt->execute([$tutor->get_idTutor()]))
+        {
+            return true;
+        }
+        else return false;
+        
     }
 
-    public function update(Tutor $tutor): void
+    public function update(Tutor $tutor): array
     {
-        $stmt = $this->pdo->prepare("UPDATE tutores SET 
-        id_tutor = ?, 
+        $json = [];
+        $stmt = $this->pdo->prepare("UPDATE tutores SET  
         status = ?, 
         cpf_pessoa = ?, 
         dtregistro = ? WHERE id_tutor = ?");
 
         $stmt->execute([
-            $tutor->get_idTutor(),
             $tutor->get_status(),
             $tutor->get_cpf(),
-            $tutor->get_dtregistro()]);
+            $tutor->get_dtregistro(),
+            $tutor->get_idTutor()]);
+
+            $json['id_tutor'] = $tutor->get_idTutor();
+            $json['status'] = $tutor->get_status();
+            $json['cpf_pessoa'] = $tutor->get_cpf();
+            $json['dtregistro'] = $tutor->get_dtregistro();
+
+        return $json;
     }
     
     

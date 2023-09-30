@@ -16,11 +16,13 @@ class TutorController {
     private DB $db;
     private CreateTutor $createTutor;
     private ListAllTutor $tutors;
+    private UpdateTutor $upTutor;
     
     public function __construct() {
         $this->db = new DB();
         $this->createTutor = new CreateTutor(new TutorRepository($this->db->getConnection()), new PeopleRepository($this->db->getConnection()), new AddressRepository($this->db->getConnection()));
         $this->tutors = new ListAllTutor(new TutorRepository($this->db->getConnection()), new PeopleRepository($this->db->getConnection()), new AddressRepository($this->db->getConnection()));
+        $this->upTutor = new UpdateTutor(new TutorRepository($this->db->getConnection()), new PeopleRepository($this->db->getConnection()), new AddressRepository($this->db->getConnection()));
     }
 
     public function createTutor(Request $request, Response $response) {
@@ -81,15 +83,20 @@ class TutorController {
 
     }
 
-    // public function getUser(Request $request, Response $response, $userId): Response {
-    //     // Call the use case to get a user by ID
-    //     $user = $this->getTutor->execute($userId);
+    public function updateTutor(Request $request, Response $response, $args): Response {
+        // Call the use case to update a tutor
+        $tutorId = $args['id'];
+        $tutor = $this->upTutor->execute($request->getParsedBody(), $tutorId);
 
-    //     // Return a response
-    //     if ($user) {
-    //         return $response->withJson($user, 200);
-    //     } else {
-    //         return $response->withJson(["message" => "User not found"], 404);
-    //     }
-    // }
+        // Return a response
+        if ($tutor !== null) {
+            $response->getBody()->write(json_encode($tutor));
+            $response->withStatus(200);
+            return $response;
+        } else {
+            $response->withStatus(500);
+            $response->getBody()->write(json_encode(["message" => "Tutor not found"]));
+            return $response;
+        }
+    }
 }
