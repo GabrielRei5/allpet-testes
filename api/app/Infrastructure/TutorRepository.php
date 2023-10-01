@@ -99,12 +99,21 @@ class TutorRepository implements TutorRepositoryInterface{
 
     public function delete(Tutor $tutor): bool
     {
-        $stmt = $this->pdo->prepare("DELETE FROM tutores WHERE id_tutor = ?");
-        if($stmt->execute([$tutor->get_idTutor()]))
+        // $this->pdo->beginTransaction();
+
+        $stmtUpdate = $this->pdo->prepare("SET FOREIGN_KEY_CHECKS = 0");
+        $stmtUpdate->execute();
+
+
+        $stmtDelete = $this->pdo->prepare("DELETE FROM tutores WHERE id_tutor = ?");
+        if($stmtDelete->execute([$tutor->get_idTutor()]))
         {
             return true;
         }
         else return false;
+        $stmtUpdate = $this->pdo->prepare("SET FOREIGN_KEY_CHECKS = 1");
+        $stmtUpdate->execute();
+        // $this->pdo->commit();
         
     }
 
@@ -141,11 +150,12 @@ class TutorRepository implements TutorRepositoryInterface{
 
         if($tutorData)
         {
-            return new Tutor(
-                $tutorData['id_tutor'],
+            $tutor = new Tutor(
                 $tutorData['status'],
-                $tutorData['cpf_pessoa'],
-                $tutorData['dtregistro']);
+                $tutorData['dtregistro'],
+                $tutorData['cpf_pessoa']);
+                $tutor->set_idTutor($tutorData['id_tutor']);
+            return $tutor;
         }else {return null;}
         
     }
@@ -158,19 +168,12 @@ class TutorRepository implements TutorRepositoryInterface{
 
             $tutores = [];
             foreach($tutoresData as $tutorData){
-                $tutores[] = new Tutor(
+                $tutor = new Tutor(
                     $tutorData['status'],
-                    
                     $tutorData['dtregistro'],
-                    $tutorData['cpf_pessoa'],
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    $tutorData['id_tutor']);
+                    $tutorData['cpf_pessoa']);
+                    $tutor->set_idTutor($tutorData['id_tutor']);
+                $tutores[] = $tutor;
             }
             return $tutores;
         } catch (PDOException $e) {

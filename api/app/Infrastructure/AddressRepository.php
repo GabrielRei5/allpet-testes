@@ -109,10 +109,15 @@ class AddressRepository implements AddressRepositoryInterface{
         }
     }
 
-    public function delete(Address $address): void
+    public function delete(Address $address): bool
     {
         $stmt = $this->pdo->prepare("DELETE FROM enderecos WHERE id_endereco = ?");
-        $stmt->execute([$address->getId()]);
+        ;
+        if($stmt->execute([$address->getId()]))
+        {
+            return true;
+        }
+        else return false;
     }
 
     public function update(Address $address): void

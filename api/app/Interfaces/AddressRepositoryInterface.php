@@ -9,7 +9,7 @@ interface AddressRepositoryInterface{
 
     public function getAll(): array;
 
-    public function delete(Address $address): void;
+    public function delete(Address $address): bool;
 
     public function search(string $query): array;
 

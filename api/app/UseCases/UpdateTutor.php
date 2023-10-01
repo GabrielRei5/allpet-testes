@@ -17,12 +17,30 @@ class UpdateTutor
 
     public function execute(?array $tutorData, int $id): ?array {
 
-        $tutor = $this->tutorRepository->getById($id);
-        $people = $this->peopleRepository->getByCpf($tutor->get_cpf());
-        $address = $this->addressRepository->getById($people->get_endereco()->getId());
+        
+        
+        
         if($tutorData !== null)
         {
+            $tutor = $this->tutorRepository->getById($id);
+            
         if ($tutor) {
+            $people = $this->peopleRepository->getByCpf($tutor->get_cpf());
+            if($people->get_endereco() !== null){
+                $address = $this->addressRepository->getById($people->get_endereco()->getId());
+    
+                
+            }else{
+                $address = new Address(
+                $tutorData['cep'],
+                $tutorData['rua'],
+                $tutorData['num_casa'],
+                $tutorData['cidade'],
+                $tutorData['estado'],
+                $tutorData['bairro']);
+                $addressIns = $this->addressRepository->save($address);
+                $address->setId($addressIns['id']);
+            }
             $tutorUp = new Tutor( 
                 $tutorData['status'],
                 $tutorData['dtregistro'],

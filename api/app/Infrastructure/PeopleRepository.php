@@ -119,10 +119,22 @@ class PeopleRepository implements PeopleRepositoryInterface{
         }
     }
 
-    public function delete(People $pessoa): void
+    public function delete(People $pessoa): bool
     {
+        // $this->pdo->beginTransaction();
+        
+        $stmtUpdate = $this->pdo->prepare("SET FOREIGN_KEY_CHECKS = 0");
+        $stmtUpdate->execute();
+
         $stmt = $this->pdo->prepare("DELETE FROM pessoas WHERE cpf = ?");
-        $stmt->execute([$pessoa->get_cpf()]);
+        if($stmt->execute([$pessoa->get_cpf()]))
+        return true;
+        else return false;
+
+        $stmtUpdate = $this->pdo->prepare("SET FOREIGN_KEY_CHECKS = 1");
+        $stmtUpdate->execute();
+        // $this->pdo->commit();
+
     }
 
     public function update(People $pessoa): void
@@ -183,15 +195,19 @@ $stmt->execute([
 
             $pessoas = [];
             foreach($pessoasData as $pessoaData){
-                $pessoas[] = new People(
+            
+                $pessoa = new People(
                     $pessoaData['cpf'],
                     $pessoaData['nome'],
                     $pessoaData['rg'],
                     $pessoaData['telefone'],
                     $pessoaData['email'],
-                    new Address(null,null,null,null,null,null,$pessoaData['fkendereco']),
+                    new Address(),
                     $pessoaData['tipo'],
                     $pessoaData['dtnasc']);
+                $pessoa->get_endereco()->setId($pessoaData['fkendereco']);
+
+                $pessoas[] = $pessoa;
             }
             return $pessoas;
         } catch (PDOException $e) {

@@ -17,12 +17,14 @@ class TutorController {
     private CreateTutor $createTutor;
     private ListAllTutor $tutors;
     private UpdateTutor $upTutor;
+    private DeleteTutor $delTutor;
     
     public function __construct() {
         $this->db = new DB();
         $this->createTutor = new CreateTutor(new TutorRepository($this->db->getConnection()), new PeopleRepository($this->db->getConnection()), new AddressRepository($this->db->getConnection()));
         $this->tutors = new ListAllTutor(new TutorRepository($this->db->getConnection()), new PeopleRepository($this->db->getConnection()), new AddressRepository($this->db->getConnection()));
         $this->upTutor = new UpdateTutor(new TutorRepository($this->db->getConnection()), new PeopleRepository($this->db->getConnection()), new AddressRepository($this->db->getConnection()));
+        $this->delTutor = new DeleteTutor(new TutorRepository($this->db->getConnection()), new PeopleRepository($this->db->getConnection()), new AddressRepository($this->db->getConnection()));
     }
 
     public function createTutor(Request $request, Response $response) {
@@ -87,6 +89,23 @@ class TutorController {
         // Call the use case to update a tutor
         $tutorId = $args['id'];
         $tutor = $this->upTutor->execute($request->getParsedBody(), $tutorId);
+
+        // Return a response
+        if ($tutor !== null) {
+            $response->getBody()->write(json_encode($tutor));
+            $response->withStatus(200);
+            return $response;
+        } else {
+            $response->withStatus(500);
+            $response->getBody()->write(json_encode(["message" => "Tutor not found"]));
+            return $response;
+        }
+    }
+
+    public function deleteTutor(Request $request, Response $response, $args): Response {
+        // Call the use case to update a tutor
+        $tutorId = $args['id'];
+        $tutor = $this->delTutor->execute($tutorId);
 
         // Return a response
         if ($tutor !== null) {

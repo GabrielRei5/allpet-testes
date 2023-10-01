@@ -19,7 +19,6 @@ foreach ($tutors as $tutor) {
     $tutorArray = [
         'id_tutor' => $tutor->get_idTutor(),
         'status' => $tutor->get_status(),
-        'cpf_pessoa' => $tutor->get_cpf(),
         'dtregistro' => $tutor->get_dtregistro(),
     ];
 
@@ -37,7 +36,6 @@ foreach ($tutors as $tutor) {
                 'rg' => $person->get_rg(),
                 'telefone' => $person->get_telefone(),
                 'email' => $person->get_email(),
-                'fkendereco' => $person->get_endereco()->getId(),
                 'tipo' => $person->get_tipo(),
                 'dtnasc' => $person->get_dt_nasc(),
             ];

@@ -9,7 +9,7 @@ interface PeopleRepositoryInterface{
 
     public function getAll(): array;
 
-    public function delete(People $pessoa): void;
+    public function delete(People $pessoa): bool;
 
     public function search(string $query): array;
 
